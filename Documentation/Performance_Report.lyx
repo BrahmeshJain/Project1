@@ -1,0 +1,1103 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass report
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Performance report on Squeue Driver and its tester application
+\begin_inset Newline newline
+\end_inset
+
+CS598 : Embedded System Programming
+\begin_inset Newline newline
+\end_inset
+
+Assignement 1
+\end_layout
+
+\begin_layout Author
+\begin_inset CommandInset href
+LatexCommand href
+name "Brahmesh Jain"
+target "Brahmesh.Jain@asu.edu"
+type "mailto:"
+
+\end_inset
+
+
+\begin_inset Newline newline
+\end_inset
+
+St Id: 1207654522
+\end_layout
+
+\begin_layout Date
+21st Sep 2014
+\end_layout
+
+\begin_layout Chapter
+Profiling using linux perf tool
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+As a part of this assignment, I have run the linux 'perf' tool to evaluate
+ the performance of the softwares.
+ perf tool is a terminal based tool that records all the information and
+ events from the software and could be used to generate the report out of
+ it.
+ In this assignement, I have run this tool to collect simple information
+ like CPU cycles, number of instructions executed in kernel and user space,
+ and memory profile of the software.
+ The tool was made to run on two different configurations of the software.
+ One uses the dynamic memory allocation for the message buffers, whereas
+ the other uses the static memory allocation.
+ This has been done to understand the difference it makes on the performance
+ of the software.
+\end_layout
+
+\begin_layout Section
+CPU cycles
+\end_layout
+
+\begin_layout Standard
+perf tool can give the number of cpu cycles that was consumed during the
+ run of a program.
+ It can also give the number of cycles that was taken by kernel and user
+ spaces separately.
+ This will help us to differentiate the CPU usage of the kernel driver and
+ its application.
+\end_layout
+
+\begin_layout Subsection
+CPU cycles on the driver with dynamic allocation of memory
+\end_layout
+
+\begin_layout Standard
+By default dynamic memory allocation is done by the driver and printing
+ of received messages is done by the application.
+ So no change in the source code is required.
+ 
+\end_layout
+
+\begin_layout Standard
+Total CPU cycles consumed by the program is calculate using this command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e cycles:uk ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/DynamicCyclesUK.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Total CPU cycles in Dynamic mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CPU cycles consumed only by the Kernel program is calculated using the below
+ command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e cycles:k ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/DynamicCyclesK.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+CPU cylcles consumed by the kernel only in dynamic mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CPU cycles consumed only by the user application(SqTester) program is calculated
+ using the below command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e cycles:u ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/DynamicCyclesU.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+CPU cylcles consumed by the user application only in dynamic mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+CPU cycles on the driver with static allocation of memory
+\end_layout
+
+\begin_layout Standard
+To make the driver to use static memory, uncomment the #define STATIC in
+ the Squeue.c file , recompile it and load the driver.
+ Switch off the printing of received message by commenting out the #define
+ PRINT_ON in the main_1.c file.
+ Run the same cycle of commands to see the number of CPU cycles.
+\end_layout
+
+\begin_layout Standard
+Total CPU cycles consumed by the program is calculate using this command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e cycles:uk ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/StaticCyclesUK.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Total CPU cycles in Static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CPU cycles consumed only by the Kernel program is calculated using the below
+ command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e cycles:k ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/StaticCyclesK.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+CPU cylcles consumed by the kernel only in static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+CPU cycles consumed only by the user application(SqTester) program is calculated
+ using the below command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e cycles:u ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/StaticCyclesU.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+CPU cylcles consumed by the user application only in static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Instructions
+\end_layout
+
+\begin_layout Standard
+Number of instructions executed for a 10seconds run of the program can be
+ calculated using the perf commands as shown below.
+\end_layout
+
+\begin_layout Subsection
+Number of instructions executed for Dynamic memory allocation
+\end_layout
+
+\begin_layout Standard
+As mentioned in the CPU cycles sections, there is no need to recompile the
+ source in dynamic case.
+ Just run the program with the perf tool using below commands
+\end_layout
+
+\begin_layout Standard
+Total instructions executed by the program is calculate using the below
+ command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e instructions:uk ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/DynamicInstructionsUK.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Total number of instructions executed in Dynamic mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Number of instructions executed by the program in kernel space is calculated
+ using the below command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e instructions:k ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/DynamicInstructionKernel.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of instructions executed in kernel space in Dynamic mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Number of instructions executed by the program in user space is calculated
+ using the below command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e instructions:u ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/DynamicInstructionsU.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of instructions executed in user space in Dynamic mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Number of instructions executed for static memory allocation
+\end_layout
+
+\begin_layout Standard
+As mentioned in the CPU cycles sections, there is a need for recompilation
+ of driver and application after commenting and uncommenting twp macros.
+\end_layout
+
+\begin_layout Standard
+Total instructions executed by the program is calculate using the below
+ command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e instructions:uk ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/StaticInstructionsUK.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Total number of instructions executed in static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Number of instructions executed by the program in kernel space is calculated
+ using the below command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e instructions:k ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/StaticInstructionsK.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of instructions executed in kernel space in static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Number of instructions executed by the program in user space is calculated
+ using the below command
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e instructions:u ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/StaticInstructionsU.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Number of instructions executed in user space in static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Memory
+\end_layout
+
+\begin_layout Standard
+Some of the memory related performance can also be tested using perf tool.
+ For example : cache-misses, cache-references, mem-loads, mem-stores.
+ etc
+\end_layout
+
+\begin_layout Standard
+To measure these parameters use the below command :
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf stat -e <one of the above parameter> ./SqTester.o
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/MemoryCacheMisses.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+cache-misses in the static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/MemoryCacheReferences.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+cache-references in the static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/MemLoadsMemStores.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+mem-load/mem-stores in the static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/StaticMem.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+General statistics in the static mode
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Profiling
+\end_layout
+
+\begin_layout Standard
+perf also supports profiling a program where we can check the calling sequences.
+ A call graph can be got by running the below command :
+\end_layout
+
+\begin_layout Standard
+\begin_inset listings
+inline false
+status open
+
+\begin_layout Plain Layout
+
+sudo perf report --call-graph --stdio
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename /home/brahmesh/CS598-Embedded_System_Programming/assignments/ESPAssignment1/Perf_Screenshots/CallGraphDynamic.png
+	lyxscale 30
+	scale 30
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption
+
+\begin_layout Plain Layout
+A call-graph generated with perf tool
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "1"
+key " "
+
+\end_inset
+
+ 
+\begin_inset CommandInset href
+LatexCommand href
+name "Performance Profiling Analysis using perf"
+target "http://blog.cj2s.de/archives/33-Performance-Profiling-Analysis-using-perf.html"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Bibliography
+\begin_inset CommandInset bibitem
+LatexCommand bibitem
+label "2"
+key "   "
+
+\end_inset
+
+
+\begin_inset CommandInset href
+LatexCommand href
+name "Perf wiki page"
+target "https://perf.wiki.kernel.org/index.php/Tutorial#Sampling_with_perf_record"
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
